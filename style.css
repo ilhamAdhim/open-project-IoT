@@ -1,0 +1,31 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    color: rgb(230, 222, 222);
+}
+
+body {
+    background-image: url('assets/bg-image.png');
+    background-position: center center;
+    background-size: cover;
+    /* -webkit-background-size:cover;
+    -moz-background-size:cover;
+    -o-background-size:cover; */
+    background-attachment: fixed;
+
+    background-color: rgba(194, 197, 190, 0.534);
+}
+
+.inner {
+    overflow: hidden;
+}
+
+.inner img {
+    transition: all .6s ease;
+}
+
+.inner:hover img {
+    transform: scale(1.2);
+
+}
