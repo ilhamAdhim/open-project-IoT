@@ -8,7 +8,7 @@
     <title>Home</title>
 </head>
 
-<!-- Latest compiled and minified CSS -->
+<!-- Bootstrap and css -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 
@@ -39,43 +39,43 @@
         </div>
     </nav>
 
-    <div class="row" style="margin-top: 20%">
-        <div class="col-sm-6">
+    <div class="row img-fluid mx-auto container center" style="margin-top: 10%;">
+        <div class="col-md-6">
             <div class="inner">
-                <div class="card bg-dark border-info text-white" style="padding:2px">
-                    <img class="card-img" src="assets/smart-led.jpg" alt="Lamp">
-                </div>
-                <div class="card-img-overlay">
-                    <h5 class="card-title">Lamp management</h5>
-                    <a href="lamp-management.html">
-                        <button type="button" class="btn btn-info"
-                            style="margin-top: 10%;margin-left: 40%;color:aliceblue">
+                <a href="lamp-management.html">
+                    <div class="card bg-dark border-info text-white" style="padding:2px">
+                        <img class="card-img" src="assets/smart-led.jpg" alt="Lamp">
+                    </div>
+                    <div class="card-img-overlay">
+                        <h5 class="card-title" style="text-align:center">Lamp management</h5>
+                        <button type="button" class="btn btn-info mx-auto d-block" style="color:aliceblue">
                             Go
                         </button>
-                    </a>
-                </div>
+                    </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        </a>
+        <div class="col-md-6">
             <div class="inner">
                 <div class="card bg-dark border-info text-white" style="padding:2px">
-                    <img class="card-img" src="assets/smart-lock.jpg" alt="Lock">
+                    <a href="door-management.html">
+                        <img class="card-img" src="assets/smart-lock.jpg" alt="Lock">
                 </div>
                 <div class="card-img-overlay">
-                    <h5 class="card-title">Door Management</h5>
-                    <a href="door-management.html">
-                        <button type="button" class="btn btn-info"
-                            style="margin-top: 10%;margin-left: 40%;color:aliceblue">
-                            Go
-                        </button>
-                    </a>
+                    <h5 class="card-title" style="text-align:center">Door Management</h5>
+                    <button type="button" class="btn btn-info mx-auto d-block" style="color:aliceblue">
+                        Go
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    </a>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>
