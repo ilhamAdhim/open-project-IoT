@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>IoT Smart Home</title>
 </head>
-<!-- Latest compiled and minified CSS -->
+<!-- Bootstrap and css -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 
@@ -38,7 +38,7 @@
     </nav>
 
 
-    <div class="text-center" style="margin-top: 120px;">
+    <div class="text-center" style="margin-top: 80px;">
         <h1>
             Lamps Control System
         </h1>
@@ -48,14 +48,17 @@
         <table class="table" style="text-align:center;">
             <thead>
                 <tr>
-                    <th> Lampu 1
-                        <button id="button1" type="button" class="btn btn-warning" onclick="onclickLamps('1')"></button>
+                    <th> Lampu 1 <br>
+                        <button id="button1" type="button" class="btn btn-warning"
+                            onclick="onclickLamps('1');timerLamp('1')"></button>
                     </th>
-                    <th> Lampu 2
-                        <button id="button2" type="button" class="btn btn-warning" onclick="onclickLamps('2')"></button>
+                    <th> Lampu 2 <br>
+                        <button id="button2" type="button" class="btn btn-warning"
+                            onclick="onclickLamps('2');timerLamp('2')"></button>
                     </th>
-                    <th> Lampu 3
-                        <button id="button3" type="button" class="btn btn-warning" onclick="onclickLamps('3')"></button>
+                    <th> Lampu 3 <br>
+                        <button id="button3" type="button" class="btn btn-warning"
+                            onclick="onclickLamps('3');timerLamp('3')"></button>
                     </th>
                 </tr>
             </thead>
@@ -64,6 +67,11 @@
                     <td scope="row" id="status1"></td>
                     <td id="status2" style="height: 45vh;"></td>
                     <td id="status3" style="height: 45vh;"></td>
+                </tr>
+                <tr>
+                    <td scope="row" id="timer1"></td>
+                    <td id="timer2"></td>
+                    <td id="timer3"></td>
                 </tr>
             </tbody>
         </table>
@@ -74,6 +82,9 @@
     <script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
     <script src="script.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    </head>
 </body>
 
 </html>
