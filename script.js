@@ -1,4 +1,4 @@
-let firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyACjO2yV4oeWgXCDGCP738bsXI3RYnkSXo",
     authDomain: "firstprojectiot-5eeec.firebaseapp.com",
     databaseURL: "https://firstprojectiot-5eeec.firebaseio.com",
@@ -36,7 +36,7 @@ let timer3 = document.getElementById("timer3");
 let statusLampsHTML = [null, status1, status2, status3];
 let buttonLamps = [null, button1, button2, button3];
 let timerLamps = [null, timer1, timer2, timer3];
-var lampsCollection = [null, null, null, null]
+var lampsCollection = [{}, {}, {}, {}]
 
 checkLampStatus();
 
@@ -46,7 +46,7 @@ function checkLampStatus() {
         readLampStatus(index);
 }
 
-function turnOn(led) {
+const turnOn = (led) => {
     allButton.innerHTML = 'Turn On All'
     allButton.style.backgroundColor = 'rgb(250, 184, 2)'
     allButton.style.color = 'rgb(0, 0, 0)'
@@ -57,7 +57,7 @@ function turnOn(led) {
 
 }
 
-function turnOff(led) {
+const turnOff = (led) => {
     allButton.innerHTML = 'Turn Off All'
     allButton.style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
     allButton.style.color = 'rgb(199, 184, 184)'
@@ -87,54 +87,52 @@ function readLampStatus(led) {
     })
 }
 
-function onclickLamps(led) {
-    //write to firebase database
-    buttonLamps[led].addEventListener('click', setTimeout(writeStatusToFirebase(led), 1000))
-}
+//write to firebase database
+const onclickLamps = (led) => buttonLamps[led].addEventListener('click', setTimeout(writeStatusToFirebase(led), 1000))
 
-function onclickAllLamps() {
-    allButton.addEventListener('click', setTimeout(writeAllStatusToFirebase(), 1000))
-}
+const onclickAllLamps = () => allButton.addEventListener('click', setTimeout(() => {
+    for (let index = 1; index <= 3; index++) writeStatusToFirebase(index)
+}, 1000))
 
-function onclickCalculatePrice() {
-    priceHTML.addEventListener('click', calculateTotalPrice())
-}
+const onclickCalculatePrice = () => priceHTML.addEventListener('click', () => {
+    let totalPrice = 0
+    for (let led = 1; led < lampsCollection.length; led++) {
+        totalPrice += calculateElectricityPricePerLamp(led)
 
-function writeStatusToFirebase(led) {
+        let timer = lampsCollection[led].timer
+        setTimeout(recordTimeToFirebase(led), 1000)
+        clearInterval(timer)
+    }
+    alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
+})
+
+const writeStatusToFirebase = (led) => {
     let updates = {}
-    updates[`leds/` + led + `/status`] = ((buttonLamps[led].innerText) === 'Turn Off') ? 0 : 1
+    updates[`leds/` + led + `/status`] = ((buttonLamps[led].innerText) === "Turn Off") ? 0 : 1
     database.ref().update(updates)
     setTimeout(recordTimeToFirebase(led), 1000)
 }
 
-function recordTimeToFirebase(led) {
+
+const recordTimeToFirebase = (led) => {
     let updateTotalSeconds = {}
     updateTotalSeconds[`leds/` + led + `/seconds`] = lampsCollection[led].totalSec
     database.ref().update(updateTotalSeconds)
 }
 
-function writeAllStatusToFirebase() {
-
-    for (let index = 1; index <= 3; index++) {
-        writeStatusToFirebase(index)
-    }
-
-}
-
-function onclickResetTimerFirebase() {
+const onclickResetTimerFirebase = () => {
     buttonReset.addEventListener('click', function () {
         let resetTimerFirebase = {}
         for (let index = 1; index <= synchronizedLamps; index++) {
             resetTimerFirebase[`leds/` + index + `/seconds`] = 0
         }
         database.ref().update(resetTimerFirebase)
-        window.location.reload(true);
+        window.location.reload(true)
     })
 
 }
 
 //TIMER SECTION 
-
 function lampHandler(led, totalSec, timer, watt) {
     this.led = led
     this.totalSec = totalSec
@@ -142,7 +140,7 @@ function lampHandler(led, totalSec, timer, watt) {
     this.watt = watt
 }
 
-function timerLamp(led, isTurnOn) {
+const timerLamp = (led, isTurnOn) => {
     resumeTimerFromFirebase(led, isTurnOn)
 
     function start() {
@@ -185,32 +183,17 @@ function timerLamp(led, isTurnOn) {
 }
 
 //For calculating the electricity price
-//.....
 
-function calculateTotalPrice() {
-    let totalPrice = 0
-    for (let index = 1; index < lampsCollection.length; index++) {
-        totalPrice += calculateElectricityPricePerLamp(index)
-    }
-    alert("Total price : " + totalPrice + " Rupiah")
-}
-
-function calculateElectricityPricePerLamp(led) {
-    // hour = Math.floor((lampsCollection[led].totalSec / 3600), 5)
-    // minute = Math.floor((lampsCollection[led].totalSec - hour * 3600) / 60)
-    // seconds = lampsCollection[led].totalSec - (hour * 3600 + minute * 60)
-
-    kiloWatt = (3600 * lampsCollection[led].watt) / 1000 //4 is hours
+const calculateElectricityPricePerLamp = (led) => {
+    kiloWatt = (lampsCollection[led].watt * (lampsCollection[led].totalSec / 3600)) / 1000
     let priceKwH = kiloWatt * 1352
     return priceKwH
 }
 
-
-
 //Catatan Progress
 //--> count up 3 lampu menumpuk perhitungan totalSec ( Jul 6 ) ===> Solusi : pakai OOP dan masukkan ke array (fixed)
 //--> ada bug timer tetep lanjut walau di turn off lampnya (Jul 8 : 2.40 PM) ===> Pakai OOP dan update array di index tertentu
-//--> SUDAH SELESAI DONG HAHAHAHA ( Jul 8 : 3.10PM) 
+//--> finished bugs ( Jul 8 : 3.10PM) 
 // Note 8 Juli 2019 : Client harus menyalakan seluruh lampu dulu, supaya disinkronisasi dengan kodingan ini ===> Isi array = null, (fixed)
 
 //update array[indeks] dengan mengganti value dari null ke object
@@ -218,4 +201,4 @@ function calculateElectricityPricePerLamp(led) {
 // 11 Juli 2019 : Ketika posisi awal semua lampu dalam posisi mati, tidak bisa menghitung harga
 // --> coba buat objek dari query firebase yang bisa menyimpan info : (fixed)
 
-//
+//24 Juli 2019 : Update ke arrow function
