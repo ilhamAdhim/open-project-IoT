@@ -90,21 +90,9 @@ function readLampStatus(led) {
 //write to firebase database
 const onclickLamps = (led) => buttonLamps[led].addEventListener('click', setTimeout(writeStatusToFirebase(led), 1000))
 
-const onclickAllLamps = () => allButton.addEventListener('click', setTimeout(() => {
-    for (let index = 1; index <= 3; index++) writeStatusToFirebase(index)
-}, 1000))
+const onclickAllLamps = () => allButton.addEventListener('click', setTimeout(writeAllStatusToFirebase(), 1000))
 
-const onclickCalculatePrice = () => priceHTML.addEventListener('click', () => {
-    let totalPrice = 0
-    for (let led = 1; led < lampsCollection.length; led++) {
-        totalPrice += calculateElectricityPricePerLamp(led)
-
-        let timer = lampsCollection[led].timer
-        setTimeout(recordTimeToFirebase(led), 1000)
-        clearInterval(timer)
-    }
-    alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
-})
+const onclickCalculatePrice = () => priceHTML.addEventListener('click', calculateTotalPrice())
 
 const writeStatusToFirebase = (led) => {
     let updates = {}
@@ -113,6 +101,10 @@ const writeStatusToFirebase = (led) => {
     setTimeout(recordTimeToFirebase(led), 1000)
 }
 
+const writeAllStatusToFirebase = () => {
+    for (let index = 1; index <= 3; index++) writeStatusToFirebase(index)
+
+}
 
 const recordTimeToFirebase = (led) => {
     let updateTotalSeconds = {}
@@ -183,12 +175,27 @@ const timerLamp = (led, isTurnOn) => {
 }
 
 //For calculating the electricity price
+const calculateTotalPrice = () => {
+    let totalPrice = 0
+    for (let led = 1; led < lampsCollection.length; led++) {
+        totalPrice += calculateElectricityPricePerLamp(led)
+
+        let timer = lampsCollection[led].timer
+        setTimeout(recordTimeToFirebase(led), 1000)
+        clearInterval(timer)
+    }
+    alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
+
+
+}
 
 const calculateElectricityPricePerLamp = (led) => {
     kiloWatt = (lampsCollection[led].watt * (lampsCollection[led].totalSec / 3600)) / 1000
     let priceKwH = kiloWatt * 1352
     return priceKwH
 }
+
+
 
 //Catatan Progress
 //--> count up 3 lampu menumpuk perhitungan totalSec ( Jul 6 ) ===> Solusi : pakai OOP dan masukkan ke array (fixed)
