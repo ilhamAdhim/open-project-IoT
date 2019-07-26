@@ -41,11 +41,15 @@
     <div class="text-center" style="margin-top: 80px;">
         <h1>
             Lamps Control System <br>
+            <button type="button" id="allButtonOn" onclick="onclickAllLamps('ToTurnOn','all-lamps')"
+                class="btn btn-warning"></button>
             <button id="buttonCount" type="button" onclick="onclickCalculatePrice()" class="btn btn-info">Count
                 Price</button>
-            <button type="button" id="allButton" onclick="onclickAllLamps()" class="btn btn-warning"></button>
             <button id="buttonReset" type="button" onclick="onclickResetTimerFirebase()" class="btn btn-danger">Reset
                 Timer</button>
+            <button type="button" id="allButtonOff" onclick="onclickAllLamps('ToTurnOff','all-lamps')"
+                class="btn btn-warning"></button>
+
         </h1>
     </div>
     <div class=" container">
@@ -54,15 +58,15 @@
                 <tr>
                     <th> Lampu 1 <br>
                         <button id="button1" type="button" class="btn btn-warning"
-                            onclick="onclickLamps('1');timerLamp('1')"></button>
+                            onclick="onclickLamps('1','each-lamp');timerLamp('1')"></button>
                     </th>
                     <th> Lampu 2 <br>
                         <button id="button2" type="button" class="btn btn-warning"
-                            onclick="onclickLamps('2');timerLamp('2')"></button>
+                            onclick="onclickLamps('2','each-lamp');timerLamp('2')"></button>
                     </th>
                     <th> Lampu 3 <br>
                         <button id="button3" type="button" class="btn btn-warning"
-                            onclick="onclickLamps('3');timerLamp('3')"></button>
+                            onclick="onclickLamps('3','each-lamp');timerLamp('3')"></button>
                     </th>
                 </tr>
             </thead>
