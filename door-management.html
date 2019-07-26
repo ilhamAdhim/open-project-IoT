@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Lock Management</title>
 </head>
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="color :rgb(226, 213, 213)">
@@ -37,10 +38,17 @@
         </div>
     </nav>
 
+    <div class="text-center align-middle">
+        <button type="button" id="buttonLock" class="btn btn-warning" onclick="onclickLamps()"></button>
+        <p id="content">
+        </p>
+    </div>
 
-    <h1 style="margin-top: 40%; margin-left: 30%">HAAA KOSONG ?? </h1>
 </body>
-
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+<script src="servoScript.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
