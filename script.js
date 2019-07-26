@@ -24,7 +24,9 @@ let status1 = document.getElementById("status1");
 let status2 = document.getElementById("status2");
 let status3 = document.getElementById("status3");
 
-let allButton = document.getElementById("allButton");
+let allButtonOn = document.getElementById("allButtonOn");
+let allButtonOff = document.getElementById("allButtonOff");
+
 let button1 = document.getElementById("button1");
 let button2 = document.getElementById("button2");
 let button3 = document.getElementById("button3");
@@ -47,9 +49,14 @@ function checkLampStatus() {
 }
 
 const turnOn = (led) => {
-    allButton.innerHTML = 'Turn On All'
-    allButton.style.backgroundColor = 'rgb(250, 184, 2)'
-    allButton.style.color = 'rgb(0, 0, 0)'
+    allButtonOn.innerHTML = 'Turn On All'
+    allButtonOn.style.backgroundColor = 'rgb(250, 184, 2)'
+    allButtonOn.style.color = 'rgb(0, 0, 0)'
+
+    allButtonOff.innerHTML = 'Turn Off All'
+    allButtonOff.style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
+    allButtonOff.style.color = 'rgb(199, 184, 184)'
+
     buttonLamps[led].style.backgroundColor = 'rgb(250, 184, 2)'
     buttonLamps[led].setAttribute("class", "btn btn-warning")
     buttonLamps[led].innerHTML = 'Turn On'
@@ -58,10 +65,14 @@ const turnOn = (led) => {
 }
 
 const turnOff = (led) => {
-    allButton.innerHTML = 'Turn Off All'
-    allButton.style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
-    allButton.style.color = 'rgb(199, 184, 184)'
-    // buttonLamps[led].setAttribute("class", "btn")
+    allButtonOff.innerHTML = 'Turn Off All'
+    allButtonOff.style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
+    allButtonOff.style.color = 'rgb(199, 184, 184)'
+
+    allButtonOn.innerHTML = 'Turn On All'
+    allButtonOn.style.backgroundColor = 'rgb(250, 184, 2)'
+    allButtonOn.style.color = 'rgb(0, 0, 0)'
+
     buttonLamps[led].style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
     buttonLamps[led].innerHTML = 'Turn Off'
     buttonLamps[led].style.color = 'rgb(199, 184, 184)'
@@ -90,20 +101,41 @@ function readLampStatus(led) {
 //write to firebase database
 const onclickLamps = (led) => buttonLamps[led].addEventListener('click', setTimeout(writeStatusToFirebase(led), 1000))
 
-const onclickAllLamps = () => allButton.addEventListener('click', setTimeout(writeAllStatusToFirebase(), 1000))
+const onclickAllLamps = (status) => {
+    if (status === "ToTurnOn")
+        allButtonOn.addEventListener('click', setTimeout(writeAllStatusToFirebase(status), 1000))
+    else {
+        allButtonOff.addEventListener('click', setTimeout(writeAllStatusToFirebase(status), 1000))
+    }
+}
 
 const onclickCalculatePrice = () => priceHTML.addEventListener('click', calculateTotalPrice())
 
 const writeStatusToFirebase = (led) => {
     let updates = {}
     updates[`leds/` + led + `/status`] = ((buttonLamps[led].innerText) === "Turn Off") ? 0 : 1
+
     database.ref().update(updates)
     setTimeout(recordTimeToFirebase(led), 1000)
 }
 
-const writeAllStatusToFirebase = () => {
-    for (let index = 1; index <= 3; index++) writeStatusToFirebase(index)
+const writeAllStatusToFirebase = (status) => {
+    let updates = {}
+    if (status === "ToTurnOn") {
+        for (let index = 1; index <= 3; index++) {
+            updates[`leds/` + index + `/status`] = 1
 
+        }
+    } else {
+        for (let index = 1; index <= 3; index++) {
+            updates[`leds/` + index + `/status`] = 0
+            database.ref().update(updates)
+
+            setTimeout(recordTimeToFirebase(index), 1000)
+        }
+
+    }
+    database.ref().update(updates)
 }
 
 const recordTimeToFirebase = (led) => {
@@ -133,7 +165,7 @@ function lampHandler(led, totalSec, timer, watt) {
 }
 
 const timerLamp = (led, isTurnOn) => {
-    resumeTimerFromFirebase(led, isTurnOn)
+    resumeTimeFirebase(led, isTurnOn)
 
     function start() {
         lampsCollection[led].totalSec++
@@ -151,11 +183,11 @@ const timerLamp = (led, isTurnOn) => {
     function resumeTimer() {
         //Hold current value of totalSec to tmpSecond
         let tmpSecond = lampsCollection[led].totalSec
-        //create new object that totalSec parameter is the value from tmpSecond
+        //create new object that totalSec parameter is the valu tmpSecond
         lampsCollection[led] = new lampHandler(led, parseInt(tmpSecond), setInterval(start, 1000), 10)
     }
 
-    function resumeTimerFromFirebase(led, isTurnOn) {
+    function resumeTimeFirebase(led, isTurnOn) {
         let secondsFirebase = 0
         database.ref(`/leds/` + led + `/seconds`).on('value', function (snapshot) {
             if (timerLamps[led].innerHTML && isTurnOn) {
@@ -185,8 +217,6 @@ const calculateTotalPrice = () => {
         clearInterval(timer)
     }
     alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
-
-
 }
 
 const calculateElectricityPricePerLamp = (led) => {
