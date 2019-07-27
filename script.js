@@ -6,8 +6,7 @@ const firebaseConfig = {
     storageBucket: "firstprojectiot-5eeec.appspot.com",
     messagingSenderId: "295179932144",
     appId: "1:295179932144:web:309ff6416339f638"
-};
-
+}
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -61,7 +60,6 @@ const turnOn = (led) => {
     buttonLamps[led].setAttribute("class", "btn btn-warning")
     buttonLamps[led].innerHTML = 'Turn On'
     buttonLamps[led].style.color = 'rgb(0, 0, 0)'
-
 }
 
 const turnOff = (led) => {
@@ -95,6 +93,7 @@ function readLampStatus(led) {
             turnOn(led);
         }
         timerLamp(led, isTurnOn)
+        setTimeout(recordTimeToFirebase(led), 1000)
     })
 }
 
@@ -102,11 +101,9 @@ function readLampStatus(led) {
 const onclickLamps = (led) => buttonLamps[led].addEventListener('click', setTimeout(writeStatusToFirebase(led), 1000))
 
 const onclickAllLamps = (status) => {
-    if (status === "ToTurnOn")
-        allButtonOn.addEventListener('click', setTimeout(writeAllStatusToFirebase(status), 1000))
-    else {
+    (status === "ToTurnOn") ?
+    allButtonOn.addEventListener('click', setTimeout(writeAllStatusToFirebase(status), 1000)):
         allButtonOff.addEventListener('click', setTimeout(writeAllStatusToFirebase(status), 1000))
-    }
 }
 
 const onclickCalculatePrice = () => priceHTML.addEventListener('click', calculateTotalPrice())
@@ -114,7 +111,6 @@ const onclickCalculatePrice = () => priceHTML.addEventListener('click', calculat
 const writeStatusToFirebase = (led) => {
     let updates = {}
     updates[`leds/` + led + `/status`] = ((buttonLamps[led].innerText) === "Turn Off") ? 0 : 1
-
     database.ref().update(updates)
     setTimeout(recordTimeToFirebase(led), 1000)
 }
@@ -122,10 +118,7 @@ const writeStatusToFirebase = (led) => {
 const writeAllStatusToFirebase = (status) => {
     let updates = {}
     if (status === "ToTurnOn") {
-        for (let index = 1; index <= 3; index++) {
-            updates[`leds/` + index + `/status`] = 1
-
-        }
+        for (let index = 1; index <= 3; index++) updates[`leds/` + index + `/status`] = 1
     } else {
         for (let index = 1; index <= 3; index++) {
             updates[`leds/` + index + `/status`] = 0
@@ -133,7 +126,6 @@ const writeAllStatusToFirebase = (status) => {
 
             setTimeout(recordTimeToFirebase(index), 1000)
         }
-
     }
     database.ref().update(updates)
 }
