@@ -17,49 +17,73 @@ const database = firebase.database();
 
 const buttonLock = document.getElementById("buttonLock");
 const content_door = document.getElementById("content");
+var today = new Date();
 
 const doorsCollection = [{
     isLocked: undefined,
-    lastLocked: "10/02/2019",
-    lastUnlocked: "20/03/4023"
+    lastLocked: undefined,
+    lastUnlocked: undefined
 }]
 
-readDoorStatus()
+for (let index = 0; index < 1; index++) {
+    readDoorStatus(index)
+}
 
-const lock = () => {
+const lock = (servo) => {
     buttonLock.style.backgroundColor = 'rgb(250, 184, 2)'
     buttonLock.setAttribute("class", "btn btn-warning")
     buttonLock.innerHTML = 'Lock'
     buttonLock.style.color = 'rgb(0, 0, 0)'
 
-    content_door.innerHTML = "Unlocked at " + doorsCollection[0].lastLocked
+    database.ref(`/servo/` + (servo + 1) + `/lastLocked`).on('value', function (snapshot) {
+        doorsCollection[servo].lastLocked = parseInt(snapshot.val())
+    })
+
+    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear()
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    doorsCollection[0].lastUnlocked = date + ' ' + time
+
+    content_door.innerHTML = "Unlocked at " + doorsCollection[servo].lastUnlocked
 }
 
-const unlock = () => {
+const unlock = (servo) => {
     buttonLock.style.backgroundColor = 'rgba(54, 58, 50, 0.596)'
+
     buttonLock.innerHTML = 'Unlock'
     buttonLock.style.color = 'rgb(199, 184, 184)'
 
-    content_door.innerHTML = "Locked at " + doorsCollection[0].lastUnlocked
+    database.ref(`/servo/` + (servo + 1) + `/lastUnlocked`).on('value', function (snapshot) {
+        doorsCollection[servo].lastUnlocked = parseInt(snapshot.val());
+    })
+
+
+    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear()
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    doorsCollection[0].lastLocked = date + ' ' + time
+
+    content_door.innerHTML = "Locked at " + doorsCollection[servo].lastLocked
 }
 
-function readDoorStatus() {
-    database.ref(`/servo/` + 1 + `/isLocked`).on('value', function (snapshot) {
+function readDoorStatus(servo) {
+
+    database.ref(`/servo/` + (servo + 1) + `/isLocked`).on('value', function (snapshot) {
         let status = snapshot.val();
         if (status) {
-            unlock()
-            doorsCollection[0].isLocked = 1
+            unlock(servo)
+            doorsCollection[servo].isLocked = 1
         } else {
-            lock()
-            doorsCollection[0].isLocked = 0
+            lock(servo)
+            doorsCollection[servo].isLocked = 0
         }
     })
 }
 
-const onclickButton = () => buttonLock.addEventListener('click', setTimeout(writeStatusToFirebase(), 1000))
+const onclickButton = (servo) => buttonLock.addEventListener('click', setTimeout(writeStatusToFirebase(servo), 1000))
 
-const writeStatusToFirebase = () => {
+const writeStatusToFirebase = (servo) => {
+
     let updates = {}
     updates[`/servo/` + 1 + `/isLocked`] = (!doorsCollection[0].isLocked) ? 1 : 0
+    window.location.reload(false)
     database.ref().update(updates)
 }
