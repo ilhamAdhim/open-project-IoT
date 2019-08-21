@@ -159,13 +159,6 @@ const timerLamp = (led, isTurnOn) => {
         clearInterval(timer)
     }
 
-    function resumeTimer() {
-        //Hold current value of totalSec to tmpSecond
-        let tmpSecond = lampsCollection[led].totalSec
-        //create new object that totalSec parameter is the valu tmpSecond
-        lampsCollection[led] = new lampHandler(led, parseInt(tmpSecond), setInterval(start, 1000), 10)
-    }
-
     function resumeTimeFirebase(led, isTurnOn) {
         let secondsFirebase = 0
         database.ref(`/leds/` + led + `/seconds`).on('value', function (snapshot) {
@@ -189,16 +182,20 @@ const calculateTotalPrice = () => {
     let updates ={}
     for(let index = 1;index < lampsCollection.length;index++) {
         updates[`leds/` + index + `/status`] = 1
-        
         setTimeout(database.ref().update(updates), 1000)
     }
     for (let led = 1; led < lampsCollection.length; led++) {
         totalPrice += calculateElectricityPricePerLamp(led)
         let timer = lampsCollection[led].timer
         setTimeout(recordTimeToFirebase(led), 1000)
-        
+        hour = Math.floor(lampsCollection[led].totalSec / 3600)
+        minute = Math.floor((lampsCollection[led].totalSec - hour * 3600) / 60)
+        seconds = lampsCollection[led].totalSec - (hour * 3600 + minute * 60)
+        timerLamps[led].innerHTML = hour + " : " + minute + " : " + seconds
         clearInterval(timer)
+        
     }
+    
     alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
 }
 
