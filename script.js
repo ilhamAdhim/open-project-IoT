@@ -135,7 +135,6 @@ const recordTimeToFirebase = (led) => {
     database.ref().update(updateTotalSeconds)
 }
 
-
 //TIMER SECTION 
 function lampHandler(led, totalSec, timer, watt) {
     this.led = led
@@ -170,18 +169,16 @@ const timerLamp = (led, isTurnOn) => {
     function resumeTimeFirebase(led, isTurnOn) {
         let secondsFirebase = 0
         database.ref(`/leds/` + led + `/seconds`).on('value', function (snapshot) {
-            if (timerLamps[led].innerHTML && isTurnOn) {
-                console.log("Lamp " + led + " turned on , starting timer...")
-                resumeTimer()
-            } else if (isTurnOn == false) {
-                console.log("Lamp " + led + " turned off , stopping timer...")
-                stopTimer()
-            } else {
+        console.log("lamp " + led + " is "  + isTurnOn)
+            if (isTurnOn) {
                 secondsFirebase = parseInt(snapshot.val());
                 //replace null value to new objects
                 lampsCollection[led] = new lampHandler(led, parseInt(secondsFirebase), setInterval(start, 1000), 10)
                 console.log("success turned on lamp " + led)
-            }
+            } else if (!isTurnOn) {
+                console.log("Lamp " + led + " turned off , stopping timer...")
+                stopTimer()
+            }            
         })
     }
 }
@@ -189,11 +186,17 @@ const timerLamp = (led, isTurnOn) => {
 //For calculating the electricity price
 const calculateTotalPrice = () => {
     let totalPrice = 0
+    let updates ={}
+    for(let index = 1;index < lampsCollection.length;index++) {
+        updates[`leds/` + index + `/status`] = 1
+        
+        setTimeout(database.ref().update(updates), 1000)
+    }
     for (let led = 1; led < lampsCollection.length; led++) {
         totalPrice += calculateElectricityPricePerLamp(led)
-
         let timer = lampsCollection[led].timer
         setTimeout(recordTimeToFirebase(led), 1000)
+        
         clearInterval(timer)
     }
     alert("Total price : " + totalPrice.toFixed(3) + " Rupiah")
