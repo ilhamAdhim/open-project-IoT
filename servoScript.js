@@ -84,6 +84,6 @@ const writeStatusToFirebase = (servo) => {
 
     let updates = {}
     updates[`/servo/` + 1 + `/isLocked`] = (!doorsCollection[0].isLocked) ? 1 : 0
-    window.location.reload(false)
     database.ref().update(updates)
+    window.location.reload(false)
 }

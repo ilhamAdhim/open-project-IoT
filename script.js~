@@ -17,6 +17,7 @@ var totalSec, timer, isTurnOn
 
 let synchronizedLamps = 3
 let priceHTML = document.getElementById("buttonCount")
+let resetTime = document.getElementById("buttonReset")
 
 let status1 = document.getElementById("status1");
 let status2 = document.getElementById("status2");
@@ -135,6 +136,20 @@ const recordTimeToFirebase = (led) => {
     database.ref().update(updateTotalSeconds)
 }
 
+const onclickResetTimerFirebase = () => {
+    buttonReset.addEventListener('click', function () {
+        let resetTimerFirebase = {}
+        let updates
+        for (let index = 1; index <= synchronizedLamps; index++) {
+            resetTimerFirebase[`leds/` + index + `/seconds`] = 0
+            updates[`leds/` + led + `/status`] = 0
+        }
+        database.ref().update(resetTimerFirebase)
+        database.ref().update(updates)
+        window.location.reload(true)
+    })
+
+}
 
 //TIMER SECTION 
 function lampHandler(led, totalSec, timer, watt) {
