@@ -119,12 +119,7 @@ const writeAllStatusToFirebase = (status) => {
     if (status === "ToTurnOn") {
         for (let index = 1; index <= 3; index++) updates[`leds/` + index + `/status`] = 1
     } else {
-        for (let index = 1; index <= 3; index++) {
-            updates[`leds/` + index + `/status`] = 0
-            database.ref().update(updates)
-
-            setTimeout(recordTimeToFirebase(index), 1000)
-        }
+        for (let index = 1; index <= 3; index++) updates[`leds/` + index + `/status`] = 0
     }
     database.ref().update(updates)
 }
